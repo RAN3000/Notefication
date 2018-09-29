@@ -21,11 +21,11 @@ public class ColorManager {
 
     @IntDef({GREEN, RED, BLUE, ORANGE, PURPLE})
     @Retention(RetentionPolicy.SOURCE)
-    @interface NoteficationColor {}
+    public @interface NoteficationColor {}
 
     @IntDef({DARK_GREEN, DARK_RED, DARK_BLUE, DARK_ORANGE, DARK_PURPLE})
     @Retention(RetentionPolicy.SOURCE)
-    @interface NoteficationDarkColor {}
+    public @interface NoteficationDarkColor {}
 
     @NoteficationColor
     private int currentColor = GREEN;
