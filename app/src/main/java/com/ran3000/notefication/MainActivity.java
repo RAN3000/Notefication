@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ran3000.notefication.data.Note;
+import com.ran3000.notefication.data.NoteDao;
+import com.ran3000.notefication.data.NoteDatabase;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,12 +35,16 @@ public class MainActivity extends AppCompatActivity {
     ImageButton mainButtonSend;
 
     private ColorManager colorManager;
+    private NoteDatabase database;
+    private AppExecutors executors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         colorManager = new ColorManager();
+        database = NoteDatabase.getAppDatabase(this);
+        executors = new AppExecutors();
 
         // no title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -73,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
     public void sendNote() {
         Timber.d("Note sent: %s", mainEditText.getText());
 
+        Note note = new Note();
+        note.setText(mainEditText.getText().toString());
+        note.setColor(colorManager.getCurrentColor());
 
+        executors.diskIO().execute(() -> {
+            database.noteDao().insertAll(note);
+        });
 
         mainEditText.getText().clear();
     }

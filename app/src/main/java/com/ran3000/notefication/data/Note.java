@@ -34,11 +34,12 @@ public class Note {
         this.text = text;
     }
 
+    @ColorManager.NoteficationColor
     public int getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(@ColorManager.NoteficationColor int color) {
         this.color = color;
     }
 }
