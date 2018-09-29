@@ -2,7 +2,9 @@ package com.ran3000.notefication;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -38,6 +40,9 @@ public class NoteficationManager {
     }
 
     public void createNotification(@NonNull Note note) {
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+
         paint.setColor(ContextCompat.getColor(context, note.getColor()));
         canvas.drawCircle(55, 55, 55, paint);
 
@@ -50,6 +55,7 @@ public class NoteficationManager {
                 .setColor(ContextCompat.getColor(context, note.getColor()))
                 .setContentTitle(note.getText())
                 .setContentText("Expand for more.")
+                .setContentIntent(contentIntent)
                 .setCustomBigContentView(remoteViews)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
