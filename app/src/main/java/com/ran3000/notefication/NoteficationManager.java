@@ -16,6 +16,9 @@ import android.support.v4.content.ContextCompat;
 import android.widget.RemoteViews;
 
 import com.ran3000.notefication.data.Note;
+import com.ran3000.notefication.receivers.CloseNotificationReceiver;
+
+import timber.log.Timber;
 
 public class NoteficationManager {
 
@@ -39,15 +42,20 @@ public class NoteficationManager {
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
     }
 
-    public void createNotification(@NonNull Note note) {
+    public void createNotification(long id, @NonNull Note note) {
         PendingIntent contentIntent =
                 PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        Intent closeIntent = new Intent(context, CloseNotificationReceiver.class);
+        closeIntent.putExtra("id", id);
+        PendingIntent closePendingIntent =
+                PendingIntent.getBroadcast(context, (int) id, closeIntent, 0);
 
         paint.setColor(ContextCompat.getColor(context, note.getColor()));
         canvas.drawCircle(55, 55, 55, paint);
 
         remoteViews.setTextViewText(R.id.notification_text, note.getText());
         remoteViews.setInt(R.id.notification_layout, "setBackgroundResource", note.getColor());
+        remoteViews.setOnClickPendingIntent(R.id.notification_close_button, closePendingIntent);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -63,7 +71,7 @@ public class NoteficationManager {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
         // notificationId is a unique int for each notification that you must define
-        notificationManager.notify((int) note.getId(), mBuilder.build());
+        notificationManager.notify((int) id, mBuilder.build());
     }
 
     public void createNotificationChannel() {

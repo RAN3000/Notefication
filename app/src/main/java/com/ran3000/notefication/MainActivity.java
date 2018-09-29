@@ -90,8 +90,7 @@ public class MainActivity extends AppCompatActivity {
         executors.diskIO().execute(() -> {
             long newId = database.noteDao().insert(note);
 
-            note.setId(newId);
-            notificationManager.createNotification(note);
+            notificationManager.createNotification(newId, note);
         });
 
         mainEditText.getText().clear();

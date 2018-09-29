@@ -12,13 +12,13 @@ public interface NoteDao {
     @Query("SELECT * FROM notes")
     List<Note> getAll();
 
-    @Query("SELECT * FROM notes WHERE id IN (:ids)")
-    List<Note> getByIds(long[] ids);
+    @Query("SELECT * FROM notes WHERE id = :id")
+    Note getById(long id);
 
     @Insert
-    long insert(Note notes);
+    long insert(Note note);
 
     @Delete
-    void delete(Note user);
+    void delete(Note note);
 }
 
