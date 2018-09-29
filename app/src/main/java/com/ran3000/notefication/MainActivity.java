@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.main_send_button)
     public void sendNote() {
         Timber.d("Note sent: %s", mainEditText.getText());
+
+
+
+        mainEditText.getText().clear();
     }
 
     @OnClick(R.id.main_background)
