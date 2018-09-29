@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Notefication</string>
     <string name="what_do_you_need_to_note">WHAT DO YOU NEED TO NOTE?</string>
+    <string name="write_your_note_here">Write your note here</string>
 </resources>
