@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.RemoteViews;
 
 import com.ran3000.notefication.data.Note;
 
@@ -19,6 +20,8 @@ public class NoteficationManager {
     private static final String CHANNEL_ID = "NoteficationChannel2";
     private static final String CHANNEL_NAME = "Notefication";
     private static final String CHANNEL_DESCRIPTION = "Sticky notes in notifications.";
+
+    private RemoteViews remoteViews;
 
     private Bitmap bitmap = Bitmap.createBitmap(110, 110, Bitmap.Config.ARGB_8888);
     private Canvas canvas;
@@ -31,11 +34,15 @@ public class NoteficationManager {
         this.context = context;
         paint.setStyle(Paint.Style.FILL);
         canvas = new Canvas(bitmap);
+        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_expanded_layout);
     }
 
     public void createNotification(@NonNull Note note) {
         paint.setColor(ContextCompat.getColor(context, note.getColor()));
         canvas.drawCircle(55, 55, 55, paint);
+
+        remoteViews.setTextViewText(R.id.notification_text, note.getText());
+        remoteViews.setInt(R.id.notification_layout, "setBackgroundResource", note.getColor());
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -43,6 +50,7 @@ public class NoteficationManager {
                 .setColor(ContextCompat.getColor(context, note.getColor()))
                 .setContentTitle(note.getText())
                 .setContentText("Expand for more.")
+                .setCustomBigContentView(remoteViews)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
