@@ -9,7 +9,7 @@ import com.ran3000.notefication.ColorManager;
 @Entity(tableName = "notes")
 public class Note {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
 
     @ColumnInfo(name = "text")
     private String text;
@@ -18,11 +18,11 @@ public class Note {
     @ColorManager.NoteficationColor
     private int color;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

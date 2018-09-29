@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.ran3000.notefication.data.Note;
-import com.ran3000.notefication.data.NoteDao;
 import com.ran3000.notefication.data.NoteDatabase;
 
 import butterknife.BindView;
@@ -37,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ColorManager colorManager;
     private NoteDatabase database;
     private AppExecutors executors;
+    private NoteficationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         colorManager = new ColorManager();
         database = NoteDatabase.getAppDatabase(this);
         executors = new AppExecutors();
+        notificationManager = new NoteficationManager(this);
+        notificationManager.createNotificationChannel();
 
         // no title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -86,7 +88,10 @@ public class MainActivity extends AppCompatActivity {
         note.setColor(colorManager.getCurrentColor());
 
         executors.diskIO().execute(() -> {
-            database.noteDao().insertAll(note);
+            long newId = database.noteDao().insert(note);
+
+            note.setId(newId);
+            notificationManager.createNotification(note);
         });
 
         mainEditText.getText().clear();

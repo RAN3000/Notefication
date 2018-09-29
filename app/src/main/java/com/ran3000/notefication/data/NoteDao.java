@@ -13,7 +13,7 @@ public interface NoteDao {
     List<Note> getAll();
 
     @Insert
-    void insertAll(Note... notes);
+    long insert(Note notes);
 
     @Delete
     void delete(Note user);
