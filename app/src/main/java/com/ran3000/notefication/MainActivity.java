@@ -1,5 +1,6 @@
 package com.ran3000.notefication;
 
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ran3000.notefication.data.Note;
 import com.ran3000.notefication.data.NoteDatabase;
@@ -77,11 +79,25 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        if (Intent.ACTION_SEND.equals(getIntent().getAction()) && getIntent().getType() != null) {
+            if ("text/plain".equals(getIntent().getType())) {
+                String sharedText = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+                if (sharedText != null) {
+                    mainEditText.setText(sharedText);
+                }
+            }
+        }
     }
 
     @OnClick(R.id.main_send_button)
     public void sendNote() {
         Timber.d("Note sent: %s", mainEditText.getText());
+
+        if (mainEditText.getText().toString().length() > 100) {
+            Toast.makeText(this, "Your note is too long", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Note note = new Note();
         note.setText(mainEditText.getText().toString());
