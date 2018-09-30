@@ -7,10 +7,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 import com.ran3000.notefication.AppExecutors;
+import com.ran3000.notefication.NoteficationManager;
 import com.ran3000.notefication.data.Note;
 import com.ran3000.notefication.data.NoteDatabase;
-
-import timber.log.Timber;
 
 public class CloseNotificationReceiver extends BroadcastReceiver {
 
@@ -31,8 +30,8 @@ public class CloseNotificationReceiver extends BroadcastReceiver {
             } else {
                 Note note = database.noteDao().getById(id);
 
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel((int) note.getId());
+                NoteficationManager manager = new NoteficationManager(context);
+                manager.deleteNotification(note.getId());
                 database.noteDao().delete(note);
             }
 

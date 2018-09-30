@@ -18,8 +18,6 @@ import android.widget.RemoteViews;
 import com.ran3000.notefication.data.Note;
 import com.ran3000.notefication.receivers.CloseNotificationReceiver;
 
-import timber.log.Timber;
-
 public class NoteficationManager {
 
     private static final String CHANNEL_ID = "NoteficationChannel2";
@@ -72,6 +70,11 @@ public class NoteficationManager {
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify((int) id, mBuilder.build());
+    }
+
+    public void deleteNotification(long id) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel((int) id);
     }
 
     public void createNotificationChannel() {
