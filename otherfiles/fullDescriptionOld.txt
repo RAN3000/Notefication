@@ -1,0 +1,13 @@
+When I need to remember something I always write it on my android phone, for example in Google Keep, but then I always need to look back in the app to find it. Unless I create a reminder, so I always end up forgetting what I needed to do. What if I don't know when I will need to remember that? In that case a reminder would be useless and I would forget about that thing. That's why I created Notefication. 
+
+Notefication it's a very simple and minimalistic app that let you create notes directly in your notifications. Where you always look. You will never forget about a thing again!!! You can also personalize every note you create, just tapping the screen. I use Notefication daily for all my notes and stuff I have to remember such as homework, what I need to buy at the supermarket or call my mom. The possible uses are endless. 
+
+FEATURES:
+- Create notes in your notification with few clicks
+- Personalize each note as you prefer
+- Notes stay in your notifications even when you clear all the notifications
+- Expand notes for bigger text
+- Delete a note, clicking the close button in the expanded view of the notification
+
+SUPPORT:
+Feel free to ask me anything and I'm open for suggestions, that's my email address: giacomoran@gmail.com

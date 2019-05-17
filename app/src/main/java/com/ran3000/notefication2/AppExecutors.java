@@ -1,4 +1,4 @@
-package com.ran3000.notefication;
+package com.ran3000.notefication2;
 
 import android.os.Handler;
 import android.os.Looper;

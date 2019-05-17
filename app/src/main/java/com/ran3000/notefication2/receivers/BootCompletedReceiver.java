@@ -1,13 +1,13 @@
-package com.ran3000.notefication.receivers;
+package com.ran3000.notefication2.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ran3000.notefication.AppExecutors;
-import com.ran3000.notefication.NoteficationManager;
-import com.ran3000.notefication.data.Note;
-import com.ran3000.notefication.data.NoteDatabase;
+import com.ran3000.notefication2.AppExecutors;
+import com.ran3000.notefication2.NoteficationManager;
+import com.ran3000.notefication2.data.Note;
+import com.ran3000.notefication2.data.NoteDatabase;
 
 import timber.log.Timber;
 

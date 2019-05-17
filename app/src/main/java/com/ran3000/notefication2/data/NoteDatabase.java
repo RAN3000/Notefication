@@ -1,4 +1,4 @@
-package com.ran3000.notefication.data;
+package com.ran3000.notefication2.data;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;

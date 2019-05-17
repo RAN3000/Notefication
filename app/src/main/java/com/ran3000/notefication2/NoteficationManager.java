@@ -1,4 +1,4 @@
-package com.ran3000.notefication;
+package com.ran3000.notefication2;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,8 +15,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.RemoteViews;
 
-import com.ran3000.notefication.data.Note;
-import com.ran3000.notefication.receivers.CloseNotificationReceiver;
+import com.ran3000.notefication2.data.Note;
+import com.ran3000.notefication2.receivers.CloseNotificationReceiver;
 
 public class NoteficationManager {
 

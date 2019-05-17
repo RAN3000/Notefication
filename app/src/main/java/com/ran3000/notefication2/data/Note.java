@@ -1,10 +1,10 @@
-package com.ran3000.notefication.data;
+package com.ran3000.notefication2.data;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.ran3000.notefication.ColorManager;
+import com.ran3000.notefication2.ColorManager;
 
 @Entity(tableName = "notes")
 public class Note {

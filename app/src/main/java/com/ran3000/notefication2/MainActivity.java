@@ -1,9 +1,10 @@
-package com.ran3000.notefication;
+package com.ran3000.notefication2;
 
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,8 +17,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ran3000.notefication.data.Note;
-import com.ran3000.notefication.data.NoteDatabase;
+import com.ran3000.notefication2.data.Note;
+import com.ran3000.notefication2.data.NoteDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     EditText mainEditText;
     @BindView(R.id.main_send_button)
     ImageButton mainButtonSend;
+    @BindView(R.id.main_settings_button)
+    ImageButton mainButtonSettings;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setTranslationZ(mainBackground, 1);
         ViewCompat.setTranslationZ(mainEditText, 20);
         ViewCompat.setTranslationZ(mainButtonSend, 20);
+        ViewCompat.setTranslationZ(mainButtonSettings, 20);
 
 
         // edit text action send
@@ -110,6 +114,29 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mainEditText.getText().clear();
+    }
+
+    @OnClick(R.id.main_settings_button)
+    public void showSettingsDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Restore notifications")
+                .setMessage("Tap RESTORE if some of your notes disappeared from your notifications.")
+
+                .setPositiveButton("RESTORE", (dialog, which) -> {
+                    if (notificationManager != null) {
+                        executors.diskIO().execute(() -> {
+                            NoteDatabase database = NoteDatabase.getAppDatabase(MainActivity.this);
+
+                            for (Note note : database.noteDao().getAll()) {
+                                notificationManager.createNotification(note.getId(), note);
+                            }
+
+                        });
+                    }
+
+                })
+                .setNegativeButton("CANCEL", null)
+                .show();
     }
 
     @OnClick(R.id.main_background)
