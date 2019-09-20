@@ -1,9 +1,9 @@
 package com.ran3000.notefication2.data;
 
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
 
 import java.util.List;
 
@@ -20,5 +20,9 @@ public interface NoteDao {
 
     @Delete
     void delete(Note note);
+
+    @Query("SELECT COUNT(id) FROM notes")
+    int getNotesCount();
+
 }
 

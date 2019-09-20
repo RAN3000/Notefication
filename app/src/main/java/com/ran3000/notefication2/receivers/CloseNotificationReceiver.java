@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.ran3000.notefication2.AppExecutors;
+import com.ran3000.notefication2.NoteficationForegroundService;
 import com.ran3000.notefication2.NoteficationManager;
 import com.ran3000.notefication2.data.Note;
 import com.ran3000.notefication2.data.NoteDatabase;
@@ -32,6 +33,11 @@ public class CloseNotificationReceiver extends BroadcastReceiver {
                 NoteficationManager manager = new NoteficationManager(context);
                 manager.deleteNotification(note.getId());
                 database.noteDao().delete(note);
+
+                if (database.noteDao().getNotesCount() == 0) {
+                    Intent serviceIntent = new Intent(context, NoteficationForegroundService.class);
+                    context.stopService(serviceIntent);
+                }
             }
 
         });

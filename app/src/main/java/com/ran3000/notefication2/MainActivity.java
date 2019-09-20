@@ -1,11 +1,11 @@
 package com.ran3000.notefication2;
 
 import android.content.Intent;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -35,8 +35,6 @@ public class MainActivity extends AppCompatActivity {
     EditText mainEditText;
     @BindView(R.id.main_send_button)
     ImageButton mainButtonSend;
-    @BindView(R.id.main_settings_button)
-    ImageButton mainButtonSettings;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -52,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         executors = new AppExecutors();
         notificationManager = new NoteficationManager(this);
         notificationManager.createNotificationChannel();
+
+        // check if there are notefication to be shown
+        executors.diskIO().execute(() -> {
+            if (database.noteDao().getNotesCount() > 0) {
+                Intent serviceIntent = new Intent(MainActivity.this, NoteficationForegroundService.class);
+                ContextCompat.startForegroundService(MainActivity.this, serviceIntent);
+            }
+        });
 
         // no title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -69,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setTranslationZ(mainBackground, 1);
         ViewCompat.setTranslationZ(mainEditText, 20);
         ViewCompat.setTranslationZ(mainButtonSend, 20);
-        ViewCompat.setTranslationZ(mainButtonSettings, 20);
 
 
         // edit text action send
@@ -110,33 +115,11 @@ public class MainActivity extends AppCompatActivity {
         executors.diskIO().execute(() -> {
             long newId = database.noteDao().insert(note);
 
-            notificationManager.createNotification(newId, note);
+            Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
+            ContextCompat.startForegroundService(this, serviceIntent);
         });
 
         mainEditText.getText().clear();
-    }
-
-    @OnClick(R.id.main_settings_button)
-    public void showSettingsDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Restore notifications")
-                .setMessage("Tap RESTORE if some of your notes disappeared from your notifications.")
-
-                .setPositiveButton("RESTORE", (dialog, which) -> {
-                    if (notificationManager != null) {
-                        executors.diskIO().execute(() -> {
-                            NoteDatabase database = NoteDatabase.getAppDatabase(MainActivity.this);
-
-                            for (Note note : database.noteDao().getAll()) {
-                                notificationManager.createNotification(note.getId(), note);
-                            }
-
-                        });
-                    }
-
-                })
-                .setNegativeButton("CANCEL", null)
-                .show();
     }
 
     @OnClick(R.id.main_background)

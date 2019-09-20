@@ -4,6 +4,7 @@
 
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="com.ran3000.notefication2.NoteficationApplication"
@@ -27,7 +28,10 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.ran3000.notefication2.receivers.CloseNotificationReceiver"></receiver>
+        <service
+            android:name=".NoteficationForegroundService"
+            android:exported="false"/>
+        <receiver android:name="com.ran3000.notefication2.receivers.CloseNotificationReceiver" />
         <receiver android:name="com.ran3000.notefication2.receivers.BootCompletedReceiver" android:enabled="true" android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

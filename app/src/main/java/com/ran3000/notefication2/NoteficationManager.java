@@ -1,5 +1,6 @@
 package com.ran3000.notefication2;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,10 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import android.widget.RemoteViews;
 
 import com.ran3000.notefication2.data.Note;
@@ -63,6 +64,7 @@ public class NoteficationManager {
                 .setContentText("Expand for more.")
                 .setContentIntent(contentIntent)
                 .setCustomBigContentView(remoteViews)
+                .setAutoCancel(false)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
@@ -70,6 +72,20 @@ public class NoteficationManager {
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify((int) id, mBuilder.build());
+    }
+
+    public Notification createNotificationForService() {
+        PendingIntent contentIntent =
+                PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Notefication")
+                .setContentText("Running in the background to show your notes.")
+                .setContentIntent(contentIntent)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        return mBuilder.build();
     }
 
     public void deleteNotification(long id) {

@@ -4,33 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ran3000.notefication2.AppExecutors;
-import com.ran3000.notefication2.NoteficationManager;
-import com.ran3000.notefication2.data.Note;
-import com.ran3000.notefication2.data.NoteDatabase;
+import androidx.core.content.ContextCompat;
 
-import timber.log.Timber;
+import com.ran3000.notefication2.NoteficationForegroundService;
 
+// Can be registered from the manifest, see: https://developer.android.com/guide/components/broadcast-exceptions.html
 public class BootCompletedReceiver extends BroadcastReceiver {
 
-    private AppExecutors executors = new AppExecutors();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        NoteficationManager manager = new NoteficationManager(context);
-
-        Timber.d("Boot completed.");
-
-        executors.diskIO().execute(() -> {
-            NoteDatabase database = NoteDatabase.getAppDatabase(context);
-
-            for (Note note : database.noteDao().getAll()) {
-                manager.createNotification(note.getId(), note);
-            }
-
-        });
-
+        Intent serviceIntent = new Intent(context, NoteficationForegroundService.class);
+        ContextCompat.startForegroundService(context, serviceIntent);
     }
 
 }
