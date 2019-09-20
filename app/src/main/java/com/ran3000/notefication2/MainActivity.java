@@ -1,11 +1,16 @@
 package com.ran3000.notefication2;
 
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         executors = new AppExecutors();
         notificationManager = new NoteficationManager(this);
         notificationManager.createNotificationChannel();
+
+        checkFirstRun();
 
         // check if there are notefication to be shown
         executors.diskIO().execute(() -> {
@@ -128,5 +135,25 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("Background changed color.");
         mainLayout.setBackgroundResource(colorManager.getCurrentColor());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, colorManager.getCurrentDarkColor()));
+    }
+
+    public void checkFirstRun() {
+        boolean isFirstRun = getSharedPreferences("Notefication_core", MODE_PRIVATE).getBoolean("isFirstRun", true);
+        if (isFirstRun){
+            new AlertDialog.Builder(this)
+                    .setTitle("Devices from Xiaomi or Huawei.")
+                    .setMessage("To make your note-fications really sticky make sure you give Autostart permission to Note-fication. Otherwise note-fications will disappear when you'll swipe this app from recents.")
+                    .setIcon(R.drawable.ic_warning_yellow_24dp)
+                    .setPositiveButton("Got it", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+
+
+            getSharedPreferences("Notefication_core", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("isFirstRun", false)
+                    .apply();
+        }
     }
 }
