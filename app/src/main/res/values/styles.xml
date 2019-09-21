@@ -8,6 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:textColorHint">@android:color/white</item>
+
+        <item name="android:windowActivityTransitions">true</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme">
+    </style>
+
+    <style name="AppTheme.Down" parent="AppTheme">
+        <item name="android:windowEnterTransition">@transition/notes_list_enter</item>
+        <item name="android:windowExitTransition">@transition/notes_list_exit</item>
     </style>
 
 </resources>

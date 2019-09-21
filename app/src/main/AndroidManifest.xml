@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Main">
         <activity
             android:name="com.ran3000.notefication2.MainActivity"
             android:windowSoftInputMode="adjustResize"
@@ -28,6 +28,9 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.ran3000.notefication2.NotesListActivity"
+            android:theme="@style/AppTheme.Down"/>
         <service
             android:name=".NoteficationForegroundService"
             android:exported="false"/>

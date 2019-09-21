@@ -1,7 +1,7 @@
 package com.ran3000.notefication2;
 
-import android.content.ComponentName;
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
@@ -10,12 +10,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     EditText mainEditText;
     @BindView(R.id.main_send_button)
     ImageButton mainButtonSend;
+    @BindView(R.id.main_down_button)
+    ImageButton mainDownButton;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setTranslationZ(mainBackground, 1);
         ViewCompat.setTranslationZ(mainEditText, 20);
         ViewCompat.setTranslationZ(mainButtonSend, 20);
+        ViewCompat.setTranslationZ(mainDownButton, 20);
 
 
         // edit text action send
@@ -155,5 +159,29 @@ public class MainActivity extends AppCompatActivity {
                     .putBoolean("isFirstRun", false)
                     .apply();
         }
+    }
+
+    @OnClick(R.id.main_down_button)
+    public void goToScreenDown() {
+        hideSoftKeyboard();
+        Intent intent = new Intent(this, NotesListActivity.class);
+        intent.putExtra("darkColor", colorManager.getCurrentDarkColor());
+        ActivityOptions options = ActivityOptions
+                .makeSceneTransitionAnimation(this, mainDownButton, "downMenu");
+        startActivity(intent);// ,
+//                 options.toBundle());
+    }
+
+    // from https://stackoverflow.com/a/17789187
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = this.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        mainEditText.clearFocus();
     }
 }
