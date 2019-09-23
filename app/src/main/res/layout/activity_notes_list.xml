@@ -19,6 +19,20 @@
         android:transitionName="downMenu"
         />
 
+    <Button
+        android:translationZ="2dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="32dp"
+        android:text="Commit update"
+        android:textColor="@android:color/white"
+        android:background="@drawable/black_button_shape"
+        style="?android:attr/borderlessButtonStyle"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notes_list_recycler_view"
         android:layout_width="0dp"
@@ -27,6 +41,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="112dp"
+        android:clipToPadding="false"
         />
 
     <TextView
