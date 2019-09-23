@@ -127,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         executors.diskIO().execute(() -> {
             long newId = database.noteDao().insert(note);
 
+            // order gets the id, when you need to switch order of two elements just switch their
+            // orderId.
+            database.noteDao().updateOrder(newId, newId);
+
             Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
             ContextCompat.startForegroundService(this, serviceIntent);
         });

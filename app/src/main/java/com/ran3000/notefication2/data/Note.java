@@ -1,5 +1,6 @@
 package com.ran3000.notefication2.data;
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -17,6 +18,8 @@ public class Note {
     @ColumnInfo(name = "color")
     @ColorManager.NoteficationColor
     private int color;
+
+    private long orderId;
 
     public long getId() {
         return id;
@@ -41,6 +44,14 @@ public class Note {
 
     public void setColor(@ColorManager.NoteficationColor int color) {
         this.color = color;
+    }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 }
 

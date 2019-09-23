@@ -9,7 +9,7 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
-    @Query("SELECT * FROM notes")
+    @Query("SELECT * FROM notes ORDER BY orderId")
     List<Note> getAll();
 
     @Query("SELECT * FROM notes WHERE id = :id")
@@ -23,6 +23,9 @@ public interface NoteDao {
 
     @Query("SELECT COUNT(id) FROM notes")
     int getNotesCount();
+
+    @Query("UPDATE notes SET orderId = :toOrder WHERE id = :ofId")
+    void updateOrder(long ofId, long toOrder);
 
 }
 
