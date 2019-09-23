@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ran3000.notefication2.NotesListActivity"
+            android:name="com.ran3000.notefication2.noteslist.NotesListActivity"
             android:theme="@style/AppTheme.Down"/>
         <service
             android:name=".NoteficationForegroundService"

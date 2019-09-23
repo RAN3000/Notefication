@@ -1,4 +1,4 @@
-package com.ran3000.notefication2;
+package com.ran3000.notefication2.noteslist;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ran3000.notefication2.AppExecutors;
+import com.ran3000.notefication2.ColorManager;
+import com.ran3000.notefication2.R;
 import com.ran3000.notefication2.data.Note;
 import com.ran3000.notefication2.data.NoteDatabase;
 
