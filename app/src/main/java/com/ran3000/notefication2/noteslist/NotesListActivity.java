@@ -1,12 +1,15 @@
 package com.ran3000.notefication2.noteslist;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,10 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ran3000.notefication2.AppExecutors;
 import com.ran3000.notefication2.ColorManager;
+import com.ran3000.notefication2.NoteficationForegroundService;
 import com.ran3000.notefication2.R;
 import com.ran3000.notefication2.data.Note;
 import com.ran3000.notefication2.data.NoteDatabase;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,8 +41,13 @@ public class NotesListActivity extends Activity {
     RecyclerView recyclerView;
     @BindView(R.id.notes_list_no_notes_text)
     TextView noNotesTextView;
+    @BindView(R.id.notes_list_update_button)
+    Button updateButton;
 
     private AppExecutors executors;
+
+    private List<Note> localNotes;
+    private LinkedList<NoteDiff> noteDiffs = new LinkedList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,11 +78,12 @@ public class NotesListActivity extends Activity {
         executors.diskIO().execute(() -> {
             NoteDatabase database = NoteDatabase.getAppDatabase(this);
 
-            List<Note> notes = database.noteDao().getAll();
+            localNotes = database.noteDao().getAll();
+            Collections.reverse(localNotes);
 
             executors.mainThread().execute(() -> {
-                if (notes.size() > 0) {
-                    recyclerView.setAdapter(new NotesAdapter(notes));
+                if (localNotes.size() > 0) {
+                    recyclerView.setAdapter(new NotesAdapter(localNotes));
                 } else {
                     recyclerView.setVisibility(View.GONE);
                     noNotesTextView.setVisibility(View.VISIBLE);
@@ -84,6 +97,42 @@ public class NotesListActivity extends Activity {
         onBackPressed();
     }
 
+    @OnClick(R.id.notes_list_update_button)
+    public void updateNotes() {
+
+        // no diffs, just exit
+        if (noteDiffs.size() == 0) {
+            onBackPressed();
+            return;
+        }
+
+        // update database
+        updateButton.setEnabled(false); // prevent button to be clicked while updating notifications
+        executors.diskIO().execute(() -> {
+            NoteDatabase database = NoteDatabase.getAppDatabase(this);
+
+            for (NoteDiff diff : noteDiffs) {
+                Note currentNote = diff.getNote();
+                if (currentNote.getId() == diff.getToId()) {
+                    // Notes to be deleted
+
+                    database.noteDao().delete(currentNote);
+                }
+            }
+
+            executors.mainThread().execute(() -> {
+
+                // recreate notifications
+                Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
+                ContextCompat.startForegroundService(this, serviceIntent);
+
+                noteDiffs.clear();
+                updateButton.setEnabled(true);
+
+            });
+        });
+    }
+
 
     class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
         private List<Note> notes;
@@ -92,10 +141,12 @@ public class NotesListActivity extends Activity {
             // each data item is just a string in this case
             TextView textView;
             RelativeLayout layout;
+            ImageButton closeButton;
             NoteViewHolder(View v) {
                 super(v);
                 textView = v.findViewById(R.id.notification_text);
                 layout = v.findViewById(R.id.notification_layout);
+                closeButton = v.findViewById(R.id.notification_close_button);
             }
         }
 
@@ -118,6 +169,12 @@ public class NotesListActivity extends Activity {
             Note note = notes.get(position);
             holder.textView.setText(note.getText());
             holder.layout.setBackgroundResource(note.getColor());
+            holder.closeButton.setOnClickListener(v -> {
+                notes.remove(position);
+                noteDiffs.add(new NoteDiff(note, note.getId()));
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, notes.size());
+            });
         }
 
         @Override

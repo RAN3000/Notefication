@@ -39,6 +39,7 @@ public class NoteficationForegroundService extends Service {
         executors.diskIO().execute(() -> {
             NoteDatabase database = NoteDatabase.getAppDatabase(this);
 
+            manager.deleteAllNotifications();
             for (Note note : database.noteDao().getAll()) {
                 manager.createNotification(note.getId(), note);
             }
