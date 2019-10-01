@@ -37,7 +37,11 @@ public class ColorManager {
 
     @NoteficationDarkColor
     int getCurrentDarkColor() {
-        switch (currentColor) {
+        return getDarkColorFor(currentColor);
+    }
+
+    public static int getDarkColorFor(int lightColor) {
+        switch (lightColor) {
             case GREEN:
                 return DARK_GREEN;
             case RED:
