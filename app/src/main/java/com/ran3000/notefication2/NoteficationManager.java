@@ -42,8 +42,10 @@ public class NoteficationManager {
     }
 
     public void createNotification(long id, @NonNull Note note) {
-        PendingIntent contentIntent =
-                PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        Intent contentIntent = new Intent(context, MainActivity.class);
+        contentIntent.putExtra("note_id", id);
+        PendingIntent contentPendingIntent =
+                PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent closeIntent = new Intent(context, CloseNotificationReceiver.class);
         closeIntent.putExtra("id", id);
         PendingIntent closePendingIntent =
@@ -62,7 +64,7 @@ public class NoteficationManager {
                 .setColor(ContextCompat.getColor(context, note.getColor()))
                 .setContentTitle(note.getText())
                 .setContentText("Expand for more.")
-                .setContentIntent(contentIntent)
+                .setContentIntent(contentPendingIntent)
                 .setCustomBigContentView(remoteViews)
                 .setAutoCancel(false)
                 .setOngoing(true)

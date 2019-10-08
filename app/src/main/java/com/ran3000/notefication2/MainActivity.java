@@ -2,6 +2,9 @@ package com.ran3000.notefication2;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -113,6 +116,20 @@ public class MainActivity extends AppCompatActivity {
                     mainEditText.setText(sharedText);
                 }
             }
+        }
+        long noteTappedId = getIntent().getLongExtra("note_id", -1);
+        if (noteTappedId != -1) {
+            executors.diskIO().execute(() -> {
+               Note tappedNote = database.noteDao().getById(noteTappedId);
+
+               executors.mainThread().execute(() -> {
+                   ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                   ClipData clip = ClipData.newPlainText("Notefication tapped note", tappedNote.getText());
+                   clipboard.setPrimaryClip(clip);
+
+                   Toast.makeText(MainActivity.this, "Copied to clipboard.", Toast.LENGTH_SHORT).show();
+               });
+            });
         }
     }
 
