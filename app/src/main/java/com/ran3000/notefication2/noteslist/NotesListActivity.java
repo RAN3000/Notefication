@@ -88,8 +88,7 @@ public class NotesListActivity extends Activity {
                 if (localNotes.size() > 0) {
                     NotesAdapter notesAdapter = new NotesAdapter(localNotes);
                     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
-                            new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
-                                    ItemTouchHelper.LEFT) {
+                            new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
                                 public boolean onMove(@NonNull RecyclerView recyclerView,
                                                       @NonNull RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                                     final int fromPos = viewHolder.getAdapterPosition();
@@ -130,6 +129,7 @@ public class NotesListActivity extends Activity {
                                                 (ItemTouchHelperViewHolder) viewHolder;
                                         itemViewHolder.onItemClear();
                                     }
+                                    notesAdapter.notifyDataSetChanged();
                                 }
 
                             });
@@ -164,10 +164,13 @@ public class NotesListActivity extends Activity {
 
             for (NoteDiff diff : noteDiffs) {
                 Note currentNote = diff.getNote();
-                if (currentNote.getId() == diff.getToId()) {
+                if (diff.getToId() == NoteDiff.DELETE_NOTE_FAKE_ID) {
                     // Notes to be deleted
 
                     database.noteDao().delete(currentNote);
+                } else {
+                    // can probably be optimized, we are using too many swaps
+                    database.noteDao().updateOrder(currentNote.getId(), diff.getToId());
                 }
             }
 
@@ -178,7 +181,10 @@ public class NotesListActivity extends Activity {
                 ContextCompat.startForegroundService(this, serviceIntent);
 
                 noteDiffs.clear();
-                updateButton.setEnabled(true);
+
+                // notes in the RecyclerView adapter is messed up a this point, it's better to
+                // reset everything out of laziness
+                onBackPressed();
 
             });
         });
@@ -237,7 +243,7 @@ public class NotesListActivity extends Activity {
             holder.layout.setBackgroundResource(note.getColor());
             holder.closeButton.setOnClickListener(v -> {
                 notes.remove(position);
-                noteDiffs.add(new NoteDiff(note, note.getId()));
+                noteDiffs.add(new NoteDiff(note, NoteDiff.DELETE_NOTE_FAKE_ID));
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, notes.size());
             });
@@ -248,15 +254,43 @@ public class NotesListActivity extends Activity {
         public void onItemMove(int fromPosition, int toPosition) {
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
-//                    noteDiffs.add(new NoteDiff(notes.get(i), notes.get(i+1).getId()));
-//                    noteDiffs.add(new NoteDiff(notes.get(i+1), notes.get(i).getId()));
+
+                    // we cannot swap fromPosition with toPosition directly because, if you try it,
+                    // recycler view moving doesn't swap directly but, let's say we move one item
+                    // forward, pushes everything behind by on position
+                    long fromOrderId = notes.get(i).getOrderId();
+                    long toOrderId = notes.get(i+1).getOrderId();
+
+                    noteDiffs.add(new NoteDiff(notes.get(i), toOrderId));
+                    notes.get(i).setOrderId(toOrderId);
+
+                    noteDiffs.add(new NoteDiff(notes.get(i+1), fromOrderId));
+                    notes.get(i+1).setOrderId(fromOrderId);
+
                     Collections.swap(notes, i, i + 1);
                 }
             } else {
                 for (int i = fromPosition; i > toPosition; i--) {
+
+                    long fromOrderId = notes.get(i).getOrderId();
+                    long toOrderId = notes.get(i-1).getOrderId();
+
+                    noteDiffs.add(new NoteDiff(notes.get(i), toOrderId));
+                    notes.get(i).setOrderId(toOrderId);
+
+                    noteDiffs.add(new NoteDiff(notes.get(i-1), fromOrderId));
+                    notes.get(i-1).setOrderId(fromOrderId);
+
                     Collections.swap(notes, i, i - 1);
                 }
             }
+
+            Timber.d("fromPosition: %s", fromPosition);
+            Timber.d("toPosition: %s", toPosition);
+
+            Timber.d("fromPosition note: %s", notes.get(fromPosition));
+            Timber.d("toPosition note: %s", notes.get(toPosition));
+
             notifyItemMoved(fromPosition, toPosition);
         }
 

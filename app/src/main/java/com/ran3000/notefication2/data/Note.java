@@ -53,5 +53,14 @@ public class Note {
     public void setOrderId(long orderId) {
         this.orderId = orderId;
     }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", orderId=" + orderId +
+                '}';
+    }
 }
 
