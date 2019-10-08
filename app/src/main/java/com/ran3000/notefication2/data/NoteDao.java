@@ -21,6 +21,9 @@ public interface NoteDao {
     @Delete
     void delete(Note note);
 
+    @Query("DELETE FROM notes")
+    void deleteAll();
+
     @Query("SELECT COUNT(id) FROM notes")
     int getNotesCount();
 

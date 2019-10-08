@@ -2,6 +2,7 @@ package com.ran3000.notefication2;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     ImageButton mainButtonSend;
     @BindView(R.id.main_down_button)
     ImageButton mainDownButton;
+    @BindView(R.id.main_clear_all)
+    ImageView mainClearAllButton;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -87,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setTranslationZ(mainEditText, 20);
         ViewCompat.setTranslationZ(mainButtonSend, 20);
         ViewCompat.setTranslationZ(mainDownButton, 20);
+        ViewCompat.setTranslationZ(mainClearAllButton, 20);
 
 
         // edit text action send
@@ -173,8 +178,28 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("darkColor", colorManager.getCurrentDarkColor());
         ActivityOptions options = ActivityOptions
                 .makeSceneTransitionAnimation(this, mainDownButton, "downMenu");
-        startActivity(intent);// ,
-//                 options.toBundle());
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.main_clear_all)
+    public void promptClearAllNotifications() {
+        new AlertDialog.Builder(this)
+                .setTitle("Clear all")
+                .setMessage("Are you sure you want to clear all the note-fications?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    // Continue with delete operation
+                    executors.diskIO().execute( () -> {
+                            database.noteDao().deleteAll();
+
+                            // update the notifications
+                            Intent serviceIntent = new Intent(MainActivity.this, NoteficationForegroundService.class);
+                            ContextCompat.startForegroundService(MainActivity.this, serviceIntent);
+                        }
+                    );
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.ic_clear_all_black_24dp)
+                .show();
     }
 
     // from https://stackoverflow.com/a/17789187
