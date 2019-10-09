@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ran3000.notefication2.AppExecutors;
 import com.ran3000.notefication2.ColorManager;
 import com.ran3000.notefication2.NoteficationForegroundService;
+import com.ran3000.notefication2.NoteficationManager;
 import com.ran3000.notefication2.R;
 import com.ran3000.notefication2.data.Note;
 import com.ran3000.notefication2.data.NoteDatabase;
@@ -174,11 +175,21 @@ public class NotesListActivity extends Activity {
                 }
             }
 
+            int nNotes = database.noteDao().getNotesCount();
+
             executors.mainThread().execute(() -> {
 
                 // recreate notifications
                 Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
-                ContextCompat.startForegroundService(this, serviceIntent);
+                if (nNotes > 0) {
+                    ContextCompat.startForegroundService(this, serviceIntent);
+                } else {
+
+                    NoteficationManager manager = new NoteficationManager(NotesListActivity.this);
+                    manager.deleteAllNotifications();
+
+                    NotesListActivity.this.stopService(serviceIntent);
+                }
 
                 noteDiffs.clear();
 
