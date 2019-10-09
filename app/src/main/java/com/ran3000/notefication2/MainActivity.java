@@ -206,11 +206,16 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     // Continue with delete operation
                     executors.diskIO().execute( () -> {
-                            database.noteDao().deleteAll();
+                        database.noteDao().deleteAll();
 
-                            // update the notifications
+                        NoteficationManager manager = new NoteficationManager(MainActivity.this);
+                        manager.deleteAllNotifications();
+
+                        executors.mainThread().execute(() -> {
+                            // no notefications -> stop service
                             Intent serviceIntent = new Intent(MainActivity.this, NoteficationForegroundService.class);
-                            ContextCompat.startForegroundService(MainActivity.this, serviceIntent);
+                            MainActivity.this.stopService(serviceIntent);
+                        });
                         }
                     );
                 })
