@@ -19,6 +19,13 @@ public class ColorManager {
     public static final int DARK_ORANGE = R.color.dark_orange;
     public static final int DARK_PURPLE = R.color.dark_purple;
 
+
+    public static final int GREEN_CIRCLE = R.drawable.shape_color_round_green;
+    public static final int RED_CIRCLE = R.drawable.shape_color_round_red;
+    public static final int BLUE_CIRCLE = R.drawable.shape_color_round_blue;
+    public static final int ORANGE_CIRCLE = R.drawable.shape_color_round_orange;
+    public static final int PURPLE_CIRCLE = R.drawable.shape_color_round_purple;
+
     @IntDef({GREEN, RED, BLUE, ORANGE, PURPLE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface NoteficationColor {}
@@ -54,6 +61,23 @@ public class ColorManager {
                 return DARK_PURPLE;
             default:
                 return DARK_GREEN;
+        }
+    }
+
+    public static int getCircleFor(int lightColor) {
+        switch (lightColor) {
+            case GREEN:
+                return GREEN_CIRCLE;
+            case RED:
+                return RED_CIRCLE;
+            case BLUE:
+                return BLUE_CIRCLE;
+            case ORANGE:
+                return ORANGE_CIRCLE;
+            case PURPLE:
+                return PURPLE_CIRCLE;
+            default:
+                return GREEN_CIRCLE;
         }
     }
 

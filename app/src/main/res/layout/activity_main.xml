@@ -44,6 +44,19 @@
         android:padding="8dp"
         />
 
+    <ImageView
+        android:id="@+id/main_color_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shape_color_round_green"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintTop_toBottomOf="@id/main_clear_all"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <EditText
         android:id="@+id/main_edittext"
         android:layout_width="0dp"

@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -51,11 +51,16 @@ public class MainActivity extends AppCompatActivity {
     ImageButton mainDownButton;
     @BindView(R.id.main_clear_all)
     ImageView mainClearAllButton;
+    @BindView(R.id.main_color_preview)
+    ImageView mainColorPreview;
 
     private ColorManager colorManager;
     private NoteDatabase database;
     private AppExecutors executors;
     private NoteficationManager notificationManager;
+    private SharedPreferences sharedPreferences;
+
+    private boolean darkMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,11 +136,22 @@ public class MainActivity extends AppCompatActivity {
                });
             });
         }
+
+        sharedPreferences = this.getSharedPreferences(
+                "notefications_user_settings", Context.MODE_PRIVATE);
+        darkMode = sharedPreferences.getBoolean("dark_mode", false);
+        if (darkMode) {
+            setDarkMode(true);
+        }
     }
 
     @OnClick(R.id.main_send_button)
     public void sendNote() {
         Timber.d("Note sent: %s", mainEditText.getText());
+
+        if (mainEditText.getText().toString().equalsIgnoreCase("dark")) {
+            setDarkMode(!darkMode);
+        }
 
         if (mainEditText.getText().toString().length() > 100) {
             Toast.makeText(this, "Your note is too long", Toast.LENGTH_SHORT).show();
@@ -164,7 +180,10 @@ public class MainActivity extends AppCompatActivity {
     public void changeColor() {
         colorManager.nextColor();
         Timber.d("Background changed color.");
-        mainLayout.setBackgroundResource(colorManager.getCurrentColor());
+        if (!darkMode) {
+            mainLayout.setBackgroundResource(colorManager.getCurrentColor());
+        }
+        mainColorPreview.setImageResource(ColorManager.getCircleFor(colorManager.getCurrentColor()));
         getWindow().setStatusBarColor(ContextCompat.getColor(this, colorManager.getCurrentDarkColor()));
     }
 
@@ -235,5 +254,18 @@ public class MainActivity extends AppCompatActivity {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         mainEditText.clearFocus();
+    }
+
+
+    private void setDarkMode(boolean on) {
+        this.darkMode = on;
+        if (on) {
+            mainLayout.setBackgroundResource(android.R.color.black);
+        } else { // reset normal mode
+            mainLayout.setBackgroundResource(colorManager.getCurrentColor());
+        }
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("dark_mode", on);
+        editor.apply();
     }
 }
