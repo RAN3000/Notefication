@@ -12,6 +12,9 @@ public interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY orderId")
     List<Note> getAll();
 
+    @Query("SELECT * FROM notes WHERE sticky = 1 ORDER BY orderId")
+    List<Note> getAllSticky();
+
     @Query("SELECT * FROM notes WHERE id = :id")
     Note getById(long id);
 

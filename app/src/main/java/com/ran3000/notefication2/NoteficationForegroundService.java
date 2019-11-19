@@ -40,7 +40,7 @@ public class NoteficationForegroundService extends Service {
             NoteDatabase database = NoteDatabase.getAppDatabase(this);
 
             manager.deleteAllNotifications();
-            for (Note note : database.noteDao().getAll()) {
+            for (Note note : database.noteDao().getAllSticky()) {
                 manager.createNotification(note.getId(), note);
             }
         });

@@ -1,5 +1,6 @@
 package com.ran3000.notefication2.data;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -20,6 +21,9 @@ public class Note {
     private int color;
 
     private long orderId;
+
+    @ColumnInfo(name = "sticky")
+    private boolean sticky;
 
     public long getId() {
         return id;
@@ -54,12 +58,22 @@ public class Note {
         this.orderId = orderId;
     }
 
+    public boolean isSticky() {
+        return sticky;
+    }
+
+    public void setSticky(boolean sticky) {
+        this.sticky = sticky;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "Note{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", orderId=" + orderId +
+                ", sticky=" + sticky +
                 '}';
     }
 }

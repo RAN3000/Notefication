@@ -112,19 +112,6 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setTranslationZ(mainSendSticky, 20);
         ViewCompat.setTranslationZ(mainSendNonSticky, 20);
 
-
-        // edit text action send
-        mainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    sendNoteSticky();
-                    return true;
-                }
-                return false;
-            }
-        });
-
         mainEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -175,8 +162,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.main_send_sticky)
-    public void sendNoteSticky() {
+    private void sendNote(boolean sticky) {
         Timber.d("Note sent: %s", mainEditText.getText());
 
         if (mainEditText.getText().toString().equalsIgnoreCase("dark")) {
@@ -186,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         Note note = new Note();
         note.setText(mainEditText.getText().toString());
         note.setColor(colorManager.getCurrentColor());
+        note.setSticky(sticky);
 
         executors.diskIO().execute(() -> {
             long newId = database.noteDao().insert(note);
@@ -194,13 +181,25 @@ public class MainActivity extends AppCompatActivity {
             // orderId.
             database.noteDao().updateOrder(newId, newId);
 
-            Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
-            ContextCompat.startForegroundService(this, serviceIntent);
+            if (sticky) {
+                Intent serviceIntent = new Intent(this, NoteficationForegroundService.class);
+                ContextCompat.startForegroundService(this, serviceIntent);
+            }
         });
 
         // assume the user is writing a thread, the user can change color and the thread deleted.
         mainEditText.setText("_");
         mainEditText.setSelection(1);
+    }
+
+    @OnClick(R.id.main_send_sticky)
+    public void sendNoteSticky() {
+        sendNote(true);
+    }
+
+    @OnClick(R.id.main_send_non_sticky)
+    public void sendNoteNonSticky() {
+        sendNote(false);
     }
 
     @OnClick(R.id.main_background)
