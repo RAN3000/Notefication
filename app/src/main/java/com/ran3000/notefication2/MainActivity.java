@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,16 +46,18 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout mainLayout;
     @BindView(R.id.main_background)
     Button mainBackground;
-    @BindView(R.id.main_edittext)
+    @BindView(R.id.notification_edit_layout)
+    RelativeLayout editLayout;
+    @BindView(R.id.notification_edit_edittext)
     EditText mainEditText;
-    @BindView(R.id.main_send_button)
-    ImageButton mainButtonSend;
     @BindView(R.id.main_down_button)
     ImageButton mainDownButton;
     @BindView(R.id.main_clear_all)
     ImageView mainClearAllButton;
     @BindView(R.id.main_color_preview)
     ImageView mainColorPreview;
+    @BindView(R.id.main_text)
+    TextView mainText;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -96,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("Activity created.");
 
         ViewCompat.setTranslationZ(mainBackground, 1);
-        ViewCompat.setTranslationZ(mainEditText, 20);
-        ViewCompat.setTranslationZ(mainButtonSend, 20);
+        ViewCompat.setTranslationZ(mainLayout, 20);
         ViewCompat.setTranslationZ(mainDownButton, 20);
         ViewCompat.setTranslationZ(mainClearAllButton, 20);
 
@@ -111,6 +115,25 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mainEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 100) {
+                    Toast.makeText(MainActivity.this, "Your note is too long", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -145,17 +168,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.main_send_button)
     public void sendNote() {
         Timber.d("Note sent: %s", mainEditText.getText());
 
         if (mainEditText.getText().toString().equalsIgnoreCase("dark")) {
             setDarkMode(!darkMode);
-        }
-
-        if (mainEditText.getText().toString().length() > 100) {
-            Toast.makeText(this, "Your note is too long", Toast.LENGTH_SHORT).show();
-            return;
         }
 
         Note note = new Note();
@@ -182,9 +199,7 @@ public class MainActivity extends AppCompatActivity {
     public void changeColor() {
         colorManager.nextColor();
         Timber.d("Background changed color.");
-        if (!darkMode) {
-            mainLayout.setBackgroundResource(colorManager.getCurrentColor());
-        }
+        editLayout.setBackgroundResource(colorManager.getCurrentColor());
         mainColorPreview.setImageResource(ColorManager.getCircleFor(colorManager.getCurrentColor()));
         getWindow().setStatusBarColor(ContextCompat.getColor(this, colorManager.getCurrentDarkColor()));
 
@@ -268,8 +283,16 @@ public class MainActivity extends AppCompatActivity {
         this.darkMode = on;
         if (on) {
             mainLayout.setBackgroundResource(android.R.color.black);
+            mainClearAllButton.setImageResource(R.drawable.ic_clear_all_white_24dp);
+            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+            mainDownButton.setBackgroundResource(android.R.color.white);
+            mainText.setTextColor(getResources().getColor(R.color.transparent_white));
         } else { // reset normal mode
-            mainLayout.setBackgroundResource(colorManager.getCurrentColor());
+            mainLayout.setBackgroundResource(android.R.color.white);
+            mainClearAllButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
+            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_down_white_24dp);
+            mainDownButton.setBackgroundResource(android.R.color.black);
+            mainText.setTextColor(getResources().getColor(R.color.transparent_black));
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("dark_mode", on);

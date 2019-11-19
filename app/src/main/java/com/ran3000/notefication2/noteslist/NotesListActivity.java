@@ -1,8 +1,9 @@
 package com.ran3000.notefication2.noteslist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,8 @@ public class NotesListActivity extends Activity {
     TextView noNotesTextView;
     @BindView(R.id.notes_list_update_button)
     Button updateButton;
+    @BindView(R.id.notes_list_up_button)
+    ImageButton notesListUpButton;
 
     private AppExecutors executors;
 
@@ -79,6 +82,11 @@ public class NotesListActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // apply light/dark mode
+        SharedPreferences sharedPreferences = this.getSharedPreferences(
+                "notefications_user_settings", Context.MODE_PRIVATE);
+        applyDarkMode(sharedPreferences.getBoolean("dark_mode", false));
 
         executors.diskIO().execute(() -> {
             NoteDatabase database = NoteDatabase.getAppDatabase(this);
@@ -315,6 +323,16 @@ public class NotesListActivity extends Activity {
         @Override
         public int getItemCount() {
             return notes.size();
+        }
+    }
+
+    private void applyDarkMode(boolean on) {
+        if (on) {
+            notesListUpButton.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+            notesListUpButton.setBackgroundResource(android.R.color.white);
+        } else { // reset normal mode
+            notesListUpButton.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp);
+            notesListUpButton.setBackgroundResource(android.R.color.black);
         }
     }
 

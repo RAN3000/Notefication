@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notification_edit_layout"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/green">
+
+    <EditText
+        android:id="@+id/notification_edit_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:hint="@string/write_your_note_here"
+        android:inputType="textCapSentences|textMultiLine"
+        android:imeOptions="actionSend"
+        android:textStyle="bold"
+        android:backgroundTint="@android:color/white"
+        android:background="@android:color/transparent"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:textCursorDrawable="@android:color/white"
+        android:textAlignment="center"
+        android:layout_centerInParent="true"
+        android:scrollHorizontally="false"
+        android:maxLines="6"
+        android:maxLength="100"
+        />
+
+    <ImageView
+        android:id="@+id/notification_edit_thread_indicator"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/transparent_white_rect"
+        android:contentDescription="thread bar" />
+
+</RelativeLayout>
