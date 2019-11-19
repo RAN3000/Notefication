@@ -1,5 +1,6 @@
 package com.ran3000.notefication2;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ClipData;
@@ -27,7 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_background)
     Button mainBackground;
     @BindView(R.id.notification_edit_layout)
-    RelativeLayout editLayout;
+    ConstraintLayout editLayout;
     @BindView(R.id.notification_edit_edittext)
     EditText mainEditText;
     @BindView(R.id.main_down_button)
@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView mainColorPreview;
     @BindView(R.id.main_text)
     TextView mainText;
+    @BindView(R.id.main_send_sticky)
+    Button mainSendSticky;
+    @BindView(R.id.main_send_non_sticky)
+    Button mainSendNonSticky;
 
     private ColorManager colorManager;
     private NoteDatabase database;
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean darkMode = false;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +106,11 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("Activity created.");
 
         ViewCompat.setTranslationZ(mainBackground, 1);
-        ViewCompat.setTranslationZ(mainLayout, 20);
+        ViewCompat.setTranslationZ(editLayout, 20);
         ViewCompat.setTranslationZ(mainDownButton, 20);
         ViewCompat.setTranslationZ(mainClearAllButton, 20);
+        ViewCompat.setTranslationZ(mainSendSticky, 20);
+        ViewCompat.setTranslationZ(mainSendNonSticky, 20);
 
 
         // edit text action send
@@ -111,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    sendNote();
+                    sendNoteSticky();
                     return true;
                 }
                 return false;
@@ -168,7 +175,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sendNote() {
+    @OnClick(R.id.main_send_sticky)
+    public void sendNoteSticky() {
         Timber.d("Note sent: %s", mainEditText.getText());
 
         if (mainEditText.getText().toString().equalsIgnoreCase("dark")) {
@@ -201,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
         Timber.d("Background changed color.");
         editLayout.setBackgroundResource(colorManager.getCurrentColor());
         mainColorPreview.setImageResource(ColorManager.getCircleFor(colorManager.getCurrentColor()));
+        mainSendSticky.setTextColor(getResources().getColor(colorManager.getCurrentColor()));
+        mainSendNonSticky.setTextColor(getResources().getColor(colorManager.getCurrentColor()));
         getWindow().setStatusBarColor(ContextCompat.getColor(this, colorManager.getCurrentDarkColor()));
 
         // change color changes thread
