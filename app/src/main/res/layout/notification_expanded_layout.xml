@@ -32,5 +32,12 @@
         android:background="@android:color/transparent"
         />
 
+    <ImageView
+        android:id="@+id/notification_thread_indicator"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/transparent_white_rect"
+        android:contentDescription="thread bar" />
 
 </RelativeLayout>

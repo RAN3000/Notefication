@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.ran3000.notefication2.data.Note;
@@ -57,6 +59,11 @@ public class NoteficationManager {
         remoteViews.setTextViewText(R.id.notification_text, note.getText());
         remoteViews.setInt(R.id.notification_layout, "setBackgroundResource", note.getColor());
         remoteViews.setOnClickPendingIntent(R.id.notification_close_button, closePendingIntent);
+        if (note.getText().startsWith("_")) {
+            remoteViews.setViewVisibility(R.id.notification_thread_indicator, View.VISIBLE);
+        } else {
+            remoteViews.setViewVisibility(R.id.notification_thread_indicator, View.GONE);
+        }
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)

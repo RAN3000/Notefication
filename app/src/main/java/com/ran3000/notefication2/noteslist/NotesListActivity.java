@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -210,12 +211,15 @@ public class NotesListActivity extends Activity {
             TextView textView;
             RelativeLayout layout;
             ImageButton closeButton;
+            ImageView threadIndicator;
+
             int colorResource;
             NoteViewHolder(View v) {
                 super(v);
                 textView = v.findViewById(R.id.notification_text);
                 layout = v.findViewById(R.id.notification_layout);
                 closeButton = v.findViewById(R.id.notification_close_button);
+                threadIndicator = v.findViewById(R.id.notification_thread_indicator);
             }
 
             void setColor(int colorResource) {
@@ -259,6 +263,9 @@ public class NotesListActivity extends Activity {
                 notifyItemRangeChanged(position, notes.size());
             });
             holder.setColor(note.getColor());
+            if (note.getText().startsWith("_")) {
+                holder.threadIndicator.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

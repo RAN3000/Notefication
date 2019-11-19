@@ -173,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
             ContextCompat.startForegroundService(this, serviceIntent);
         });
 
-        mainEditText.getText().clear();
+        // assume the user is writing a thread, the user can change color and the thread deleted.
+        mainEditText.setText("_");
+        mainEditText.setSelection(1);
     }
 
     @OnClick(R.id.main_background)
@@ -185,6 +187,11 @@ public class MainActivity extends AppCompatActivity {
         }
         mainColorPreview.setImageResource(ColorManager.getCircleFor(colorManager.getCurrentColor()));
         getWindow().setStatusBarColor(ContextCompat.getColor(this, colorManager.getCurrentDarkColor()));
+
+        // change color changes thread
+        if (mainEditText.getText().toString().equals("_")) {
+            mainEditText.setText("");
+        }
     }
 
     public void checkFirstRun() {
