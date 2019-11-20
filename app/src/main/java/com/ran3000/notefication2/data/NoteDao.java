@@ -30,6 +30,9 @@ public interface NoteDao {
     @Query("SELECT COUNT(id) FROM notes")
     int getNotesCount();
 
+    @Query("SELECT COUNT(id) FROM notes WHERE sticky = 1")
+    int getStickyNotesCount();
+
     @Query("UPDATE notes SET orderId = :toOrder WHERE id = :ofId")
     void updateOrder(long ofId, long toOrder);
 
