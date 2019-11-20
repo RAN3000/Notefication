@@ -293,14 +293,12 @@ public class MainActivity extends AppCompatActivity {
         if (on) {
             mainLayout.setBackgroundResource(android.R.color.black);
             mainClearAllButton.setImageResource(R.drawable.ic_clear_all_white_24dp);
-            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-            mainDownButton.setBackgroundResource(android.R.color.white);
+            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp);
             mainText.setTextColor(getResources().getColor(R.color.transparent_white));
         } else { // reset normal mode
             mainLayout.setBackgroundResource(android.R.color.white);
             mainClearAllButton.setImageResource(R.drawable.ic_clear_all_black_24dp);
-            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_down_white_24dp);
-            mainDownButton.setBackgroundResource(android.R.color.black);
+            mainDownButton.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
             mainText.setTextColor(getResources().getColor(R.color.transparent_black));
         }
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -328,11 +328,11 @@ public class NotesListActivity extends Activity {
 
     private void applyDarkMode(boolean on) {
         if (on) {
-            notesListUpButton.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-            notesListUpButton.setBackgroundResource(android.R.color.white);
-        } else { // reset normal mode
             notesListUpButton.setImageResource(R.drawable.ic_keyboard_arrow_up_white_24dp);
             notesListUpButton.setBackgroundResource(android.R.color.black);
+        } else { // reset normal mode
+            notesListUpButton.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+            notesListUpButton.setBackgroundResource(android.R.color.white);
         }
     }
 
