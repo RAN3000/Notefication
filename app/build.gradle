@@ -6,8 +6,8 @@ android {
         applicationId "com.ran3000.notefication2"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 12
-        versionName "2.2.0"
+        versionCode 13
+        versionName "2.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
