@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check if there are notefication to be shown
         executors.diskIO().execute(() -> {
-            if (database.noteDao().getNotesCount() > 0) {
+            if (database.noteDao().getStickyNotesCount() > 0) {
                 Intent serviceIntent = new Intent(MainActivity.this, NoteficationForegroundService.class);
                 ContextCompat.startForegroundService(MainActivity.this, serviceIntent);
             }

@@ -34,7 +34,7 @@ public class CloseNotificationReceiver extends BroadcastReceiver {
                 manager.deleteNotification(note.getId());
                 database.noteDao().delete(note);
 
-                if (database.noteDao().getNotesCount() == 0) {
+                if (database.noteDao().getStickyNotesCount() == 0) {
                     Intent serviceIntent = new Intent(context, NoteficationForegroundService.class);
                     context.stopService(serviceIntent);
                 }

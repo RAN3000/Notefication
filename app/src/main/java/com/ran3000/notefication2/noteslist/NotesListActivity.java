@@ -184,7 +184,7 @@ public class NotesListActivity extends Activity {
                 }
             }
 
-            int nNotes = database.noteDao().getNotesCount();
+            int nNotes = database.noteDao().getStickyNotesCount();
 
             executors.mainThread().execute(() -> {
 
