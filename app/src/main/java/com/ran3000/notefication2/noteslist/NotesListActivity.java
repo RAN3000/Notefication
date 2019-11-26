@@ -273,6 +273,8 @@ public class NotesListActivity extends Activity {
             holder.setColor(note.getColor());
             if (note.getText().startsWith("_")) {
                 holder.threadIndicator.setVisibility(View.VISIBLE);
+            } else {
+                holder.threadIndicator.setVisibility(View.GONE);
             }
         }
 
